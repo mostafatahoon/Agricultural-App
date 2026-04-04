@@ -7,7 +7,6 @@ interface AIRepository {
 
     suspend fun sendAIRequest(prompt: String): AIResponse
 
-
     suspend fun getAIResponse(prompt: String): AIResponse
 
     suspend fun saveResponse(response: AIResponse)
