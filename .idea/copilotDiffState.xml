@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="/GeminiRequest (snapshot).kt">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="/GeminiRequest (snapshot).kt" />
+              <option name="originalContent" value="data class GeminiRequest(&#10;    val contents: List&lt;Content&gt;&#10;)&#10;&#10;data class Content(&#10;    val parts: List&lt;Part&gt;&#10;)&#10;&#10;data class Part(&#10;    val text: String&#10;)" />
+              <option name="updatedContent" value="package com.example.agriculturalapp.data.dtomodel&#10;&#10;data class GeminiRequest(&#10;    val contents: List&lt;Content&gt;&#10;)&#10;&#10;data class Content(&#10;    val parts: List&lt;Part&gt;&#10;)&#10;&#10;data class Part(&#10;    val text: String&#10;)" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="/GeminiResponse (snapshot).kt">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="/GeminiResponse (snapshot).kt" />
+              <option name="originalContent" value="data class GeminiResponse(&#10;    val candidates: List&lt;Candidate&gt;&#10;)&#10;&#10;data class Candidate(&#10;    val content: ContentResponse&#10;)&#10;&#10;data class ContentResponse(&#10;    val parts: List&lt;PartResponse&gt;&#10;)&#10;&#10;data class PartResponse(&#10;    val text: String&#10;)" />
+              <option name="updatedContent" value="package com.example.agriculturalapp.data.dtomodel&#10;&#10;data class GeminiResponse(&#10;    val candidates: List&lt;Candidate&gt;&#10;)&#10;&#10;data class Candidate(&#10;    val content: ContentResponse&#10;)&#10;&#10;data class ContentResponse(&#10;    val parts: List&lt;PartResponse&gt;&#10;)&#10;&#10;data class PartResponse(&#10;    val text: String&#10;)" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
