@@ -3,8 +3,9 @@ package com.example.agriculturalapp.domain.usecase
 import com.example.agriculturalapp.domain.entity.Prompt
 import com.example.agriculturalapp.domain.entity.Topic
 import com.example.agriculturalapp.domain.entity.Word
+import javax.inject.Inject
 
-class GeneratePromptUseCase {
+class GeneratePromptUseCase @Inject constructor() {
 
     operator fun invoke(topic: Topic, selectedWords: List<Word>): Prompt {
         val wordsText = selectedWords.joinToString(", ") { it.text }
@@ -18,4 +19,3 @@ class GeneratePromptUseCase {
     }
 
 }
-

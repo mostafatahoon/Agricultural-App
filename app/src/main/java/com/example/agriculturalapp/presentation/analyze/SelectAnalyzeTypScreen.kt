@@ -9,9 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+
 @Composable
-fun AnalyzeScreen(viewModel: SelectAnalyzeTypeViewModel = viewModel()) {
+fun AnalyzeScreen(viewModel: SelectAnalyzeTypeViewModel = hiltViewModel()) {
     val isAnalyzing by viewModel.isAnalyzing
     val result by viewModel.analysisResult
 
