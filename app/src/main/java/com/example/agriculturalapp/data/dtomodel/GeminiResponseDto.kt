@@ -1,6 +1,6 @@
 package com.example.agriculturalapp.data.dtomodel
 
-data class GeminiResponse(
+data class GeminiResponseDto(
     val candidates: List<Candidate>
 )
 

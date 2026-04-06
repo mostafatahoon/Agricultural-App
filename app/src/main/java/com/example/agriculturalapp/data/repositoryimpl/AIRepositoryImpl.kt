@@ -1,49 +1,65 @@
 package com.example.agriculturalapp.data.repositoryimpl
 
+import com.example.agriculturalapp.data.dtomodel.Content
+import com.example.agriculturalapp.data.dtomodel.GeminiRequestDto
+import com.example.agriculturalapp.data.dtomodel.Part
 import com.example.agriculturalapp.data.local.ResponseDao
-import com.example.agriculturalapp.data.mapper.ResultEntityMapper
+import com.example.agriculturalapp.data.mapper.extractText
+import com.example.agriculturalapp.data.mapper.toDomain
+import com.example.agriculturalapp.data.mapper.toEntity
+import com.example.agriculturalapp.data.remote.GeminiApi
 import com.example.agriculturalapp.domain.entity.AIResponse
 import com.example.agriculturalapp.domain.repository.AIRepository
-import com.google.ai.client.generativeai.GenerativeModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class AIRepositoryImpl @Inject constructor(
-    private val generativeModel: GenerativeModel,
-    private val responseDao: ResponseDao,
-    private val resultEntityMapper: ResultEntityMapper
+class AIRepositoryImpl(
+    private val api: GeminiApi,
+    private val dao: ResponseDao,
+    private val apiKey: String
 ) : AIRepository {
 
+    override suspend fun getAIResponse(prompt: String): AIResponse {
+
+
+        val response = sendAIRequest(prompt)
+
+        saveResponse(response)
+
+        return response
+    }
+
+    override suspend fun saveResponse(response: AIResponse) {
+        dao.insertResult(response.toEntity())
+    }
+
+    override fun getSavedResponses(): Flow<List<AIResponse>> {
+        return dao.getAllResults().map { list ->
+            list.map { it.toDomain() }
+        }
+    }
+
+
     override suspend fun sendAIRequest(prompt: String): AIResponse {
-        val response = generativeModel.generateContent(prompt)
-        val text = response.text?.trim() ?: "No response generated."
+
+        val request = GeminiRequestDto(
+            contents = listOf(
+                Content(
+                    parts = listOf(
+                        Part(text = prompt)
+                    )
+                )
+            )
+        )
+
+        val apiResponse = api.generateContent(apiKey, request)
+
+        val text = apiResponse.extractText()
 
         return AIResponse(
             prompt = prompt,
             response = text,
             timestamp = System.currentTimeMillis()
         )
-    }
-
-    override suspend fun getAIResponse(prompt: String): AIResponse {
-        val entity = responseDao.getResultByAnalysisType(prompt)
-        return if (entity != null) {
-            resultEntityMapper.toDomain(entity)
-        } else {
-            val response = sendAIRequest(prompt)
-            saveResponse(response)
-            response
-        }
-    }
-
-    override suspend fun saveResponse(response: AIResponse) {
-        responseDao.insertResult(resultEntityMapper.toEntity(response))
-    }
-
-    override fun getSavedResponses(): Flow<List<AIResponse>> {
-        return responseDao.getAllResults().map { entities ->
-            entities.map { resultEntityMapper.toDomain(it) }
-        }
     }
 }
