@@ -1,6 +1,6 @@
 package com.example.agriculturalapp.data.dtomodel
 
-data class GeminiRequest(
+data class GeminiRequestDto(
     val contents: List<Content>
 )
 
