@@ -22,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,9 +51,9 @@ import com.example.agriculturalapp.presentation.navigation.ScreensRoute
 fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
     Scaffold(
         topBar = {
-            HomeTopBar(viewModel.title)
+            HomeTopBar(stringResource(R.string.home_title))
         },
-        containerColor = Color(0xFFF9FBF9)
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
 
         Column(
@@ -64,15 +66,20 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Smart farming\ndecisions\npowered by AI",
+                text = stringResource(R.string.home_headline),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.ExtraBold,
-                lineHeight = 38.sp
+                lineHeight = 38.sp,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = viewModel.description, color = Color.Gray, fontSize = 14.sp)
+            Text(
+                text = stringResource(R.string.home_description),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 14.sp
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -83,7 +90,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C)),
                 shape = RoundedCornerShape(28.dp)
-            ) { Text("Start Analysis", fontWeight = FontWeight.Bold) }
+            ) { Text(stringResource(R.string.start_analysis), fontWeight = FontWeight.Bold) }
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -94,7 +101,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                     .height(56.dp),
                 shape = RoundedCornerShape(28.dp),
                 border = BorderStroke(1.5.dp, Color(0xFF388E3C))
-            ) { Text("View Saved Results", color = Color(0xFF388E3C)) }
+            ) { Text(stringResource(R.string.view_saved_results), color = Color(0xFF388E3C)) }
 
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -132,7 +139,7 @@ fun BottomNavigationBar(navController: NavController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 8.dp
     ) {
         NavigationBarItem(
@@ -153,16 +160,16 @@ fun BottomNavigationBar(navController: NavController) {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Home,
-                            contentDescription = "Home",
+                            contentDescription = stringResource(R.string.home_nav),
                             tint = Color.White,
                             modifier = Modifier.padding(8.dp)
                         )
                     }
                 } else {
-                    Icon(Icons.Default.Home, contentDescription = "Home")
+                    Icon(Icons.Default.Home, contentDescription = stringResource(R.string.home_nav))
                 }
             },
-            label = { Text("Home") }
+            label = { Text(stringResource(R.string.home_nav)) }
         )
 
         NavigationBarItem(
@@ -181,16 +188,16 @@ fun BottomNavigationBar(navController: NavController) {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
-                            contentDescription = "History",
+                            contentDescription = stringResource(R.string.history_nav),
                             tint = Color.White,
                             modifier = Modifier.padding(8.dp)
                         )
                     }
                 } else {
-                    Icon(Icons.Default.Refresh, contentDescription = "History")
+                    Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.history_nav))
                 }
             },
-            label = { Text("History") }
+            label = { Text(stringResource(R.string.history_nav)) }
         )
     }
 }

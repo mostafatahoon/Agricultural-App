@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">التطبيق الزراعي</string>
+    <string name="menu_title">القائمة</string>
+    <string name="dark_mode">الوضع الليلي</string>
+    <string name="light_mode">الوضع النهاري</string>
+    <string name="language">اللغة</string>
+    <string name="arabic">العربية</string>
+    <string name="english">English</string>
+    <string name="settings">الإعدادات</string>
+
+    <string name="home_title">أجري إنسايت AI</string>
+    <string name="home_headline">قرارات زراعية ذكية\nمدعومة بالذكاء الاصطناعي</string>
+    <string name="home_description">استفد من بيانات الأقمار الصناعية عالية الدقة والتعلم الآلي لتحسين إنتاجية المحاصيل.</string>
+    <string name="start_analysis">ابدأ التحليل</string>
+    <string name="view_saved_results">عرض النتائج المحفوظة</string>
+    <string name="home_nav">الرئيسية</string>
+    <string name="history_nav">السجل</string>
+</resources>
