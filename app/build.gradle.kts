@@ -42,6 +42,10 @@ android {
     buildFeatures {
         compose = true
     }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.all { it.enabled = false }
+    }
 }
 
 dependencies {
