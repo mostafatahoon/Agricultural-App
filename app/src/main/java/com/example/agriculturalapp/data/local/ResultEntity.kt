@@ -10,7 +10,11 @@ data class ResultEntity(
 
     val analysisType: String,
 
+    val inputData: String, // JSON string of user inputs
+
     val aiResponse: String,
 
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+
+    val title: String = "" // Auto-generated title from analysis type
 )

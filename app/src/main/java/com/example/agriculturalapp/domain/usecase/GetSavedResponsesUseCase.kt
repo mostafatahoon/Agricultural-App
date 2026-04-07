@@ -8,5 +8,7 @@ import javax.inject.Inject
 class GetSavedResponsesUseCase @Inject constructor(
     private val repository: AIRepository
 ) {
-    operator fun invoke(): Flow<List<AIResponse>> = repository.getSavedResponses()
+    operator fun invoke(): Flow<List<AIResponse>> {
+        return repository.getSavedResponses()
+    }
 }

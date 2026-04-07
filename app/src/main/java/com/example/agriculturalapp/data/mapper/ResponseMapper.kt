@@ -8,8 +8,10 @@ fun AIResponse.toEntity(): ResultEntity {
     return ResultEntity(
         id = id,
         analysisType = prompt,
+        inputData = "", // Added missing required field
         aiResponse = response,
-        timestamp = timestamp
+        timestamp = timestamp,
+        title = "Analysis"
     )
 }
 

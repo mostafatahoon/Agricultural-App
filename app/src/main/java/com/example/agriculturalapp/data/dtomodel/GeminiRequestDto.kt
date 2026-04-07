@@ -5,6 +5,7 @@ data class GeminiRequestDto(
 )
 
 data class Content(
+    val role: String = "user",
     val parts: List<Part>
 )
 

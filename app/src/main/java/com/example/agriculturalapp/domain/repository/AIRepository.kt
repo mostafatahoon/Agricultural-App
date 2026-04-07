@@ -11,6 +11,13 @@ interface AIRepository {
 
     suspend fun saveResponse(response: AIResponse)
 
+    suspend fun saveAnalysisResult(
+        analysisType: String,
+        inputData: String,
+        aiResponse: String,
+        title: String
+    )
+
     fun getSavedResponses(): Flow<List<AIResponse>>
 
 }

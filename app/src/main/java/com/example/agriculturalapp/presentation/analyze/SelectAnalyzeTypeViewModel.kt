@@ -27,16 +27,15 @@ class SelectAnalyzeTypeViewModel @Inject constructor(
             _isAnalyzing.value = true
             _analysisResult.value = null
 
-            runCatching {
-                getAIResponseUseCase(prompt)
-            }.onSuccess { response ->
+            try {
+                val response = getAIResponseUseCase(prompt)
                 saveResponseUseCase(response)
                 _analysisResult.value = response.response
-            }.onFailure { throwable ->
+            } catch (throwable: Throwable) {
                 _analysisResult.value = "Analysis failed: ${throwable.message ?: "Unknown error"}"
+            } finally {
+                _isAnalyzing.value = false
             }
-
-            _isAnalyzing.value = false
         }
     }
 }

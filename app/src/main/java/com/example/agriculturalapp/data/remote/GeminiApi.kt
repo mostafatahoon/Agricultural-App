@@ -8,10 +8,9 @@ import retrofit2.http.Query
 
 interface GeminiApi {
 
-        @POST("v1/models/gemini-pro:generateContent")
-        suspend fun generateContent(
-            @Query("key") apiKey: String,
-            @Body request: GeminiRequestDto
-        ): GeminiResponseDto
-    }
-
+    @POST("v1/models/gemini-pro:generateContent")
+    suspend fun generateContent(
+        @Query("key") apiKey: String,
+        @Body request: GeminiRequestDto
+    ): GeminiResponseDto
+}
