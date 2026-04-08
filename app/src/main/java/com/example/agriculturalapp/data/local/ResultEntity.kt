@@ -16,5 +16,5 @@ data class ResultEntity(
 
     val timestamp: Long = System.currentTimeMillis(),
 
-    val title: String = "" // Auto-generated title from analysis type
+    val title: String = ""
 )

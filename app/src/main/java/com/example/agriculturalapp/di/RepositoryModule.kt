@@ -1,7 +1,7 @@
 package com.example.agriculturalapp.di
 
 import com.example.agriculturalapp.data.local.ResponseDao
-import com.example.agriculturalapp.data.repositoryimpl.AIRepositoryImpl
+import com.example.agriculturalapp.data.repository.AIRepositoryImpl
 import com.example.agriculturalapp.domain.repository.AIRepository
 import com.google.ai.client.generativeai.GenerativeModel
 import dagger.Module

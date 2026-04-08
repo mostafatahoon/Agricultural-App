@@ -5,15 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.agriculturalapp.domain.usecase.GetAIResponseUseCase
-import com.example.agriculturalapp.domain.usecase.SaveResponseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SelectAnalyzeTypeViewModel @Inject constructor(
-    private val getAIResponseUseCase: GetAIResponseUseCase,
-    private val saveResponseUseCase: SaveResponseUseCase
+    private val getAIResponseUseCase: GetAIResponseUseCase
 ) : ViewModel() {
 
     private val _isAnalyzing = mutableStateOf(false)
@@ -28,8 +26,8 @@ class SelectAnalyzeTypeViewModel @Inject constructor(
             _analysisResult.value = null
 
             try {
+                // getAIResponseUseCase already saves the response internally via the repository
                 val response = getAIResponseUseCase(prompt)
-                saveResponseUseCase(response)
                 _analysisResult.value = response.response
             } catch (throwable: Throwable) {
                 _analysisResult.value = "Analysis failed: ${throwable.message ?: "Unknown error"}"

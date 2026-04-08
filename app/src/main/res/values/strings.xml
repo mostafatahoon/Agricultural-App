@@ -8,7 +8,7 @@
     <string name="english">English</string>
     <string name="settings">Settings</string>
 
-    <string name="home_title">AgrInsight AI</string>
+    <string name="home_title">Agro Wise</string>
     <string name="home_headline">Smart farming\ndecisions\npowered by AI</string>
     <string name="home_description">Harness AI-powered insights to optimize your agricultural decisions.</string>
     <string name="start_analysis">Start Analysis</string>
@@ -16,12 +16,25 @@
     <string name="home_nav">Home</string>
     <string name="history_nav">History</string>
 
+    <!-- Analysis Selection Screen -->
+    <string name="select_analysis_title">Select Analysis Type</string>
+    <string name="select_analysis_subtitle">Select the specialized engine you want to use to evaluate the current field.</string>
+
     <!-- Analysis Types -->
     <string name="analysis_irrigation">Irrigation Management</string>
+    <string name="analysis_irrigation_desc">Optimize water usage based on soil sensors and highly local evapotranspiration data.</string>
+    
     <string name="analysis_disease">Disease Diagnosis</string>
+    <string name="analysis_disease_desc">Early detection of pests, fungi, and bacterial infections using AI vision.</string>
+    
     <string name="analysis_fertilizer">Fertilizer Planning</string>
+    <string name="analysis_fertilizer_desc">Customized nutrient application maps based on historical crops and current soil pH levels.</string>
+    
     <string name="analysis_climate">Climate Risk Assessment</string>
+    <string name="analysis_climate_desc">Predictive modeling of frost, heat waves, and floods to protect vital agricultural investments.</string>
+    
     <string name="analysis_market">Market Planning</string>
+    <string name="analysis_market_desc">Yield forecasts synchronized with real-time commodity market prices for optimal harvest timing.</string>
 
     <!-- Irrigation Fields -->
     <string name="field_crop">Crop Type</string>

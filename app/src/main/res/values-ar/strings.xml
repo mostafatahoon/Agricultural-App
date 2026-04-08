@@ -8,7 +8,7 @@
     <string name="english">English</string>
     <string name="settings">الإعدادات</string>
 
-    <string name="home_title">أجري إنسايت AI</string>
+    <string name="home_title">أجرو وايز</string>
     <string name="home_headline">قرارات زراعية ذكية\nمدعومة بالذكاء الاصطناعي</string>
     <string name="home_description">استخدم رؤى الذكاء الاصطناعي لتحسين قراراتك الزراعية.</string>
     <string name="start_analysis">ابدأ التحليل</string>
@@ -16,12 +16,25 @@
     <string name="home_nav">الرئيسية</string>
     <string name="history_nav">السجل</string>
 
+    <!-- Analysis Selection Screen -->
+    <string name="select_analysis_title">اختر نوع التحليل</string>
+    <string name="select_analysis_subtitle">اختر المحرك المتخصص الذي تود استخدامه لتقييم الحقل الحالي.</string>
+
     <!-- Analysis Types -->
     <string name="analysis_irrigation">إدارة الري</string>
-    <string name="analysis_disease">تشخيص الأمراض النباتية</string>
-    <string name="analysis_fertilizer">تخطيط الأسمدة</string>
-    <string name="analysis_climate">تقييم المخاطر المناخية</string>
-    <string name="analysis_market">التخطيط السوقي</string>
+    <string name="analysis_irrigation_desc">تحسين استخدام المياه بناءً على حساسات التربة وبيانات التبخر والنتح المحلية للغاية.</string>
+    
+    <string name="analysis_disease">تشخيص الأمراض</string>
+    <string name="analysis_disease_desc">الكشف المبكر عن الآفات والفطريات والالتهابات البكتيرية باستخدام رؤية الذكاء الاصطناعي.</string>
+    
+    <string name="analysis_fertilizer">تخطيط التسميد</string>
+    <string name="analysis_fertilizer_desc">خرائط تطبيق المغذيات المخصصة بناءً على المحاصيل التاريخية ومقاييس درجة حموضة التربة الحالية.</string>
+    
+    <string name="analysis_climate">تقييم مخاطر المناخ</string>
+    <string name="analysis_climate_desc">نمذجة تنبؤية للصقيع وموجات الحر والفيضانات لحماية الاستثمارات الزراعية الحيوية.</string>
+    
+    <string name="analysis_market">تخطيط السوق</string>
+    <string name="analysis_market_desc">توقعات الغلة متزامنة مع أسعار السوق للسلع في الوقت الفعلي لتوقيت الحصاد الأمثل.</string>
 
     <!-- Irrigation Fields -->
     <string name="field_crop">نوع المحصول</string>
