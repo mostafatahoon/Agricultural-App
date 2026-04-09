@@ -1,21 +1,18 @@
 package com.example.agriculturalapp.domain.usecase
 
-import com.example.agriculturalapp.data.local.AnalysisType
-import com.example.agriculturalapp.data.static.StaticDataProvider
-import com.example.agriculturalapp.domain.entity.AnalysisInput
 import javax.inject.Inject
 
 class GeneratePromptUseCase @Inject constructor() {
 
-    operator fun invoke(input: AnalysisInput): String {
-        val analysisType = input.analysisType
-        val template = StaticDataProvider.getPromptTemplate(analysisType)
-        
+    operator fun invoke(input: com.example.agriculturalapp.domain.entity.AnalysisInput): String {
+        val template = com.example.agriculturalapp.data.provider.StaticDataProvider
+            .getPromptTemplate(input.analysisType)
+
         // Format farm data from input
-        val farmDataText = input.formData.entries.joinToString("\n") { (key, value) ->
-            "- $key: $value"
+        val farmDataText = input.formData.entries.joinToString("\n") { entry ->
+            "- ${entry.key}: ${entry.value}"
         }
-        
+
         return template.replace("%FARM_DATA%", farmDataText)
     }
 }

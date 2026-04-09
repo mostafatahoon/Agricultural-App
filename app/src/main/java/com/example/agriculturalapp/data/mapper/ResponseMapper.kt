@@ -1,6 +1,5 @@
 package com.example.agriculturalapp.data.mapper
 
-import com.example.agriculturalapp.data.dtomodel.GeminiResponseDto
 import com.example.agriculturalapp.data.local.ResultEntity
 import com.example.agriculturalapp.domain.entity.AIResponse
 
@@ -22,14 +21,4 @@ fun ResultEntity.toDomain(): AIResponse {
         response = aiResponse,
         timestamp = timestamp
     )
-}
-
-fun GeminiResponseDto.extractText(): String {
-    return candidates
-        .firstOrNull()
-        ?.content
-        ?.parts
-        ?.firstOrNull()
-        ?.text
-        ?: "No response"
 }
