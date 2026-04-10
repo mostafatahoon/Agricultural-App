@@ -9,10 +9,7 @@ class GetAIResponseUseCase(
 ) {
 
     suspend operator fun invoke(prompt: String): AIResponse {
-        val response = repository.getAIResponse(prompt)
-        return response
+        return repository.getAIResponse(prompt)
     }
-
-
 }
 

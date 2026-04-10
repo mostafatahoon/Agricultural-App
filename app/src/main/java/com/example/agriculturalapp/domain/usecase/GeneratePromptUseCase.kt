@@ -2,20 +2,24 @@ package com.example.agriculturalapp.domain.usecase
 
 import com.example.agriculturalapp.domain.entity.Prompt
 import com.example.agriculturalapp.domain.entity.Topic
-import com.example.agriculturalapp.domain.entity.Word
 
 class GeneratePromptUseCase {
 
-    operator fun invoke(topic: Topic, selectedWords: List<Word>): Prompt {
-        val wordsText = selectedWords.joinToString(", ") { it.text }
-        val finalPrompt = topic.promptTemplate.replace("%WORDS%", wordsText)
+    operator fun invoke(
+        topic: Topic,
+        inputs: List<String>
+    ): Prompt {
+
+        val finalPrompt = String.format(
+            topic.promptTemplate,
+            *inputs.toTypedArray()
+        )
 
         return Prompt(
             topicName = topic.name,
-            selectedWords = selectedWords.map { it.text },
+            inputs = inputs,
             fullPrompt = finalPrompt
         )
     }
-
 }
 
