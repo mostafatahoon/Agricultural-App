@@ -54,4 +54,10 @@
     <string name="error_empty_fields">Please fill all required fields</string>
     <string name="success_saved">Analysis saved successfully</string>
     <string name="empty_history">No saved analyses yet</string>
+
+    <string name="select_analysis_title">Select Analysis Type</string>
+    <string name="select_analysis_subtitle">Choose the type of analysis you want to perform</string>
+
+
+
 </resources>
