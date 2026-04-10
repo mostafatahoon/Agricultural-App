@@ -9,10 +9,10 @@ class ResultEntityMapper @Inject constructor() {
         return ResultEntity(
             id = response.id,
             analysisType = response.prompt,
-            inputData = "", // Will be set from analysis input
+            inputData = "",
             aiResponse = response.response,
             timestamp = response.timestamp,
-            title = "Analysis"
+            title = response.prompt
         )
     }
 

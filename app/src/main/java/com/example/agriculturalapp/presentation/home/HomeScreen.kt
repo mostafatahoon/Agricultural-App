@@ -2,7 +2,9 @@ package com.example.agriculturalapp.presentation.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +15,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -29,18 +31,16 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.agriculturalapp.R
@@ -48,11 +48,8 @@ import com.example.agriculturalapp.presentation.navigation.ScreensRoute
 
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+fun HomeScreen(navController: NavController) {
     Scaffold(
-        topBar = {
-            HomeTopBar(stringResource(R.string.home_title))
-        },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
 
@@ -61,25 +58,70 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.background,
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                        )
+                    )
+                )
                 .padding(horizontal = 20.dp)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            Text(
-                text = stringResource(R.string.home_headline),
-                fontSize = 32.sp,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 38.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(30.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Row {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Eco,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.padding(horizontal = 6.dp))
 
-            Text(
-                text = stringResource(R.string.home_description),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 14.sp
-            )
+                        Text(
+                            text = stringResource(R.string.home_title),
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = stringResource(R.string.home_headline),
+                        fontSize = 38.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        lineHeight = 44.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = stringResource(R.string.home_description),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp,
+                        lineHeight = 22.sp
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -88,7 +130,10 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 shape = RoundedCornerShape(28.dp)
             ) { Text(stringResource(R.string.start_analysis), fontWeight = FontWeight.Bold) }
 
@@ -100,13 +145,15 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(28.dp),
-                border = BorderStroke(1.5.dp, Color(0xFF388E3C))
-            ) { Text(stringResource(R.string.view_saved_results), color = Color(0xFF388E3C)) }
+                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
+            ) { Text(stringResource(R.string.view_saved_results), color = MaterialTheme.colorScheme.primary) }
 
             Spacer(modifier = Modifier.height(30.dp))
 
             Card(
                 shape = RoundedCornerShape(32.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
@@ -123,23 +170,13 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeTopBar(title: String) {
-    CenterAlignedTopAppBar(
-        title = { Text(text = title, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32)) },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-        modifier = Modifier.padding(top = 16.dp)
-    )
-}
-
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
         tonalElevation = 8.dp
     ) {
         NavigationBarItem(
@@ -155,13 +192,13 @@ fun BottomNavigationBar(navController: NavController) {
                 if (currentRoute == ScreensRoute.Home.route) {
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFF2E7D32),
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Home,
                             contentDescription = stringResource(R.string.home_nav),
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.padding(8.dp)
                         )
                     }
@@ -183,13 +220,13 @@ fun BottomNavigationBar(navController: NavController) {
                 if (currentRoute == ScreensRoute.History.route) {
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFF2E7D32),
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = stringResource(R.string.history_nav),
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.padding(8.dp)
                         )
                     }

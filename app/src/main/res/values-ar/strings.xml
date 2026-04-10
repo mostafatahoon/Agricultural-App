@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">التطبيق الزراعي</string>
+    <string name="app_name">AgroWise</string>
     <string name="menu_title">القائمة</string>
     <string name="dark_mode">الوضع الليلي</string>
     <string name="light_mode">الوضع النهاري</string>
@@ -8,7 +8,7 @@
     <string name="english">English</string>
     <string name="settings">الإعدادات</string>
 
-    <string name="home_title">أجري إنسايت AI</string>
+    <string name="home_title">AgroWise AI</string>
     <string name="home_headline">قرارات زراعية ذكية\nمدعومة بالذكاء الاصطناعي</string>
     <string name="home_description">استخدم رؤى الذكاء الاصطناعي لتحسين قراراتك الزراعية.</string>
     <string name="start_analysis">ابدأ التحليل</string>

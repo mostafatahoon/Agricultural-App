@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -23,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -65,10 +67,11 @@ fun AppNavHost(viewModel: MainViewModel) {
                 ) {
                     Text(
                         text = stringResource(id = R.string.menu_title),
-                        style = MaterialTheme.typography.headlineMedium
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider()
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Dark Mode Toggle
@@ -78,7 +81,8 @@ fun AppNavHost(viewModel: MainViewModel) {
                     ) {
                         Text(
                             text = if (isDarkMode == true) stringResource(R.string.dark_mode) else stringResource(R.string.light_mode),
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Switch(
                             checked = isDarkMode ?: false,
@@ -89,7 +93,10 @@ fun AppNavHost(viewModel: MainViewModel) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Language Selection
-                    Text(text = stringResource(R.string.language))
+                    Text(
+                        text = stringResource(R.string.language),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
@@ -97,7 +104,13 @@ fun AppNavHost(viewModel: MainViewModel) {
                         Button(
                             onClick = { viewModel.setLanguage("ar") },
                             enabled = language != "ar",
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         ) {
                             Text(text = stringResource(R.string.arabic))
                         }
@@ -105,7 +118,13 @@ fun AppNavHost(viewModel: MainViewModel) {
                         Button(
                             onClick = { viewModel.setLanguage("en") },
                             enabled = language != "en",
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         ) {
                             Text(text = stringResource(R.string.english))
                         }
@@ -127,7 +146,12 @@ fun AppNavHost(viewModel: MainViewModel) {
                             }) {
                                 Icon(Icons.Default.Menu, contentDescription = "Menu")
                             }
-                        }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                        )
                     )
                 }
             },

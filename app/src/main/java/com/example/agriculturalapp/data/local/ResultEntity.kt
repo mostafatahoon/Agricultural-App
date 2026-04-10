@@ -7,14 +7,9 @@ import androidx.room.PrimaryKey
 data class ResultEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-
     val analysisType: String,
-
-    val inputData: String, // JSON string of user inputs
-
+    val inputData: String,
     val aiResponse: String,
-
     val timestamp: Long = System.currentTimeMillis(),
-
-    val title: String = "" // Auto-generated title from analysis type
+    val title: String = ""
 )

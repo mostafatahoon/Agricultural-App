@@ -10,4 +10,5 @@ sealed class ScreensRoute(val route: String) {
     object Loading : ScreensRoute("loading_screen")
     object Result : ScreensRoute("result_screen")
     object History : ScreensRoute("history_screen")
+    object HistoryDetail : ScreensRoute("history_detail_screen")
 }

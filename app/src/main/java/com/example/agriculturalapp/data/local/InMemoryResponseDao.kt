@@ -2,61 +2,43 @@ package com.example.agriculturalapp.data.local
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 /**
- * In-Memory implementation of ResponseDao for testing purposes.
- * This implementation stores all data in memory without persistence.
+ * Simple in-memory implementation of [ResponseDao] for tests and previews.
  *
- * Clean Architecture: Part of the Data Layer (Local Data Source)
- * Follows: Single Responsibility Principle
+ * It mirrors the Room DAO contract without persistence.
  */
 class InMemoryResponseDao : ResponseDao {
-    
+
     private val items = MutableStateFlow<List<ResultEntity>>(emptyList())
+    private var nextId = 1
 
-    /**
-     * Inserts a result entity into the in-memory store.
-     * Replaces existing result if same ID exists.
-     *
-     * @param result The ResultEntity to insert
-     */
     override suspend fun insertResult(result: ResultEntity) {
-        items.value = listOf(result) + items.value.filterNot { it.id == result.id }
+        val entityToStore = if (result.id == 0) {
+            result.copy(id = nextId++)
+        } else {
+            nextId = maxOf(nextId, result.id + 1)
+            result
+        }
+
+        items.update { current ->
+            current.filterNot { it.id == entityToStore.id } + entityToStore
+        }
     }
 
-    /**
-     * Retrieves all results ordered by timestamp (newest first).
-     *
-     * @return Flow of ResultEntity list
-     */
     override fun getAllResults(): Flow<List<ResultEntity>> {
-        return items.map { list -> 
-            list.sortedByDescending { it.timestamp } 
-        }
+        return items.asStateFlow()
     }
 
-    /**
-     * Deletes a result entity from the in-memory store.
-     *
-     * @param result The ResultEntity to delete
-     */
     override suspend fun deleteResult(result: ResultEntity) {
-        items.value = items.value.filterNot { 
-            it.id == result.id && it.timestamp == result.timestamp 
+        items.update { current ->
+            current.filterNot { it.id == result.id }
         }
     }
 
-    /**
-     * Retrieves a single result by analysis type.
-     *
-     * @param analysisType The analysis type to search for
-     * @return The first ResultEntity matching the analysis type, or null if not found
-     */
     override suspend fun getResultByAnalysisType(analysisType: String): ResultEntity? {
         return items.value.firstOrNull { it.analysisType == analysisType }
     }
 }
-
-
-

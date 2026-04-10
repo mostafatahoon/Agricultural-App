@@ -1,6 +1,6 @@
 package com.example.agriculturalapp.data.static
 
-import com.example.agriculturalapp.data.local.AnalysisType
+import com.example.agriculturalapp.domain.entity.AnalysisType
 
 data class AnalysisField(
     val id: String,
@@ -335,4 +335,3 @@ object StaticDataProvider {
         Make recommendations specific and actionable for the farmer.
     """
 }
-

@@ -2,14 +2,16 @@ package com.example.agriculturalapp.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.NavType
-import com.example.agriculturalapp.data.local.AnalysisType
+import com.example.agriculturalapp.domain.entity.AIResponse
 import com.example.agriculturalapp.domain.entity.AnalysisInput
-import com.example.agriculturalapp.presentation.analyze.AnalysisSelectionScreen
+import com.example.agriculturalapp.domain.entity.AnalysisType
 import com.example.agriculturalapp.presentation.aiResponse.ResultScreen
+import com.example.agriculturalapp.presentation.analyze.AnalysisSelectionScreen
+import com.example.agriculturalapp.presentation.history.HistoryDetailScreen
 import com.example.agriculturalapp.presentation.history.HistoryScreen
 import com.example.agriculturalapp.presentation.home.HomeScreen
 import com.example.agriculturalapp.presentation.splash.SplashScreen
@@ -32,7 +34,7 @@ fun NavGraph(navController: NavHostController) {
         }
         
         composable(ScreensRoute.Home.route) {
-            HomeScreen(navController = navController)
+            HomeScreen(navController)
         }
 
         composable(ScreensRoute.Analyze.route) {
@@ -53,7 +55,6 @@ fun NavGraph(navController: NavHostController) {
             DynamicFormScreen(
                 analysisType = analysisType,
                 onFormSubmit = { response ->
-                    // Pass response via NavController arguments or keep in ViewModel
                     navController.currentBackStackEntry?.savedStateHandle?.set("response", response)
                     navController.currentBackStackEntry?.savedStateHandle?.set("analysisType", analysisType)
                     navController.navigate(ScreensRoute.Result.route)
@@ -80,7 +81,22 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(ScreensRoute.History.route) {
-            HistoryScreen()
+            HistoryScreen(
+                onResultClick = { result ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("history_item", result)
+                    navController.navigate(ScreensRoute.HistoryDetail.route)
+                }
+            )
+        }
+
+        composable(ScreensRoute.HistoryDetail.route) {
+            val result = navController.previousBackStackEntry?.savedStateHandle?.get<AIResponse>("history_item")
+            if (result != null) {
+                HistoryDetailScreen(
+                    result = result,
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }

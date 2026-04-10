@@ -22,3 +22,4 @@ class GeminiMapper @Inject constructor() {
         )
     }
 }
+

@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -63,24 +66,35 @@ fun SplashScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFF4F6F3), Color(0xFFE8F5E9))
+                    colors = listOf(
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.65f),
+                        MaterialTheme.colorScheme.surface
+                    )
                 )
             ),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "App Logo",
-                modifier = Modifier
-                    .size(160.dp)
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                        this.alpha = alpha
-                    }
-            )
+            Surface(
+                shape = RoundedCornerShape(40.dp),
+                color = Color.White.copy(alpha = 0.12f),
+                tonalElevation = 6.dp
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .size(160.dp)
+                        .padding(12.dp)
+                        .graphicsLayer {
+                            scaleX = scale
+                            scaleY = scale
+                            this.alpha = alpha
+                        }
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -91,15 +105,15 @@ fun SplashScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "AgrInsight AI",
+                        text = "AgroWise",
                         style = MaterialTheme.typography.headlineMedium,
-                        color = Color(0xFF2E7D32),
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "PRECISION AGRICULTURE SOLUTIONS",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         letterSpacing = 1.sp
                     )
                 }
@@ -110,7 +124,7 @@ fun SplashScreen(
 
             CircularProgressIndicator(
                 modifier = Modifier.size(35.dp),
-                color = Color(0xFF2E7D32),
+                color = MaterialTheme.colorScheme.primary,
                 strokeWidth = 3.dp
             )
         }

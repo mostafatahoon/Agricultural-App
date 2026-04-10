@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.agriculturalapp.data.local.AnalysisType
 import com.example.agriculturalapp.domain.entity.AnalysisInput
+import com.example.agriculturalapp.domain.entity.AnalysisType
 import com.example.agriculturalapp.domain.entity.Topic
 import com.example.agriculturalapp.domain.entity.Word
 import com.example.agriculturalapp.domain.usecase.GeneratePromptUseCase
