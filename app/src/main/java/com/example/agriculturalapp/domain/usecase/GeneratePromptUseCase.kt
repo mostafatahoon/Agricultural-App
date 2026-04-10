@@ -1,21 +1,18 @@
 package com.example.agriculturalapp.domain.usecase
 
-import com.example.agriculturalapp.domain.entity.Prompt
-import com.example.agriculturalapp.domain.entity.Topic
-import com.example.agriculturalapp.domain.entity.Word
+import javax.inject.Inject
 
-class GeneratePromptUseCase {
+class GeneratePromptUseCase @Inject constructor() {
 
-    operator fun invoke(topic: Topic, selectedWords: List<Word>): Prompt {
-        val wordsText = selectedWords.joinToString(", ") { it.text }
-        val finalPrompt = topic.promptTemplate.replace("%WORDS%", wordsText)
+    operator fun invoke(input: com.example.agriculturalapp.domain.entity.AnalysisInput): String {
+        val template = com.example.agriculturalapp.data.provider.StaticDataProvider
+            .getPromptTemplate(input.analysisType)
 
-        return Prompt(
-            topicName = topic.name,
-            selectedWords = selectedWords.map { it.text },
-            fullPrompt = finalPrompt
-        )
+        // Format farm data from input
+        val farmDataText = input.formData.entries.joinToString("\n") { entry ->
+            "- ${entry.key}: ${entry.value}"
+        }
+
+        return template.replace("%FARM_DATA%", farmDataText)
     }
-
 }
-

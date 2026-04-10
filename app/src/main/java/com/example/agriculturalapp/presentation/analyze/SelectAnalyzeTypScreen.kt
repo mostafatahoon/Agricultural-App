@@ -1,17 +1,26 @@
 package com.example.agriculturalapp.presentation.analyze
 
-
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+
 @Composable
-fun AnalyzeScreen(viewModel: SelectAnalyzeTypeViewModel = viewModel()) {
+fun AnalyzeScreen(viewModel: SelectAnalyzeTypeViewModel = hiltViewModel()) {
     val isAnalyzing by viewModel.isAnalyzing
     val result by viewModel.analysisResult
 
@@ -27,13 +36,15 @@ fun AnalyzeScreen(viewModel: SelectAnalyzeTypeViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(16.dp))
             Text("AI is analyzing your field data...")
         } else {
-            result?.let {
+            if (result != null) {
                 Text(
-                    text = it,
+                    text = result.orEmpty(),
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color(0xFF2E7D32)
                 )
-            } ?: Text("Ready to start new analysis")
+            } else {
+                Text("Ready to start new analysis")
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
