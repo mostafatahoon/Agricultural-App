@@ -33,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -136,8 +137,23 @@ fun AppNavHost(viewModel: MainViewModel) {
         Scaffold(
             topBar = {
                 if (currentRoute != ScreensRoute.Splash.route) {
+                    val title = if (currentRoute == ScreensRoute.Result.route) {
+                        stringResource(R.string.history_detail_title)
+                    } else {
+                        stringResource(R.string.app_name)
+                    }
+
                     TopAppBar(
-                        title = { Text(text = stringResource(id = R.string.app_name)) },
+                        title = { 
+                            Text(
+                                text = title,
+                                style = if (currentRoute == ScreensRoute.Result.route) 
+                                    MaterialTheme.typography.titleMedium 
+                                else 
+                                    MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            ) 
+                        },
                         navigationIcon = {
                             IconButton(onClick = {
                                 scope.launch {

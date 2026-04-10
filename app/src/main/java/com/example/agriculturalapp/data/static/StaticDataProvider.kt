@@ -9,7 +9,8 @@ data class AnalysisField(
     val placeHolderEn: String,
     val placeHolderAr: String,
     val type: FieldType,
-    val options: List<String> = emptyList()
+    val optionsEn: List<String> = emptyList(),
+    val optionsAr: List<String> = emptyList()
 )
 
 enum class FieldType {
@@ -17,6 +18,21 @@ enum class FieldType {
 }
 
 object StaticDataProvider {
+
+    private val SOIL_TYPES_EN = listOf("Sandy", "Clay", "Loamy", "Silty", "Peaty", "Chalky")
+    private val SOIL_TYPES_AR = listOf("رملية", "طينية", "طميية", "غرينية", "خثية", "طباشيرية")
+
+    private val GROWTH_STAGES_EN = listOf("Seedling", "Vegetative", "Flowering", "Fruiting", "Harvesting")
+    private val GROWTH_STAGES_AR = listOf("بادرة", "خضري", "إزهار", "إثمار", "حصاد")
+
+    private val WEATHER_EN = listOf("Sunny", "Cloudy", "Rainy", "Stormy", "Windy", "Humid")
+    private val WEATHER_AR = listOf("مشمس", "غائم", "ممطر", "عاصف", "ريح", "رطب")
+
+    private val SEASONS_EN = listOf("Spring", "Summer", "Fall", "Winter")
+    private val SEASONS_AR = listOf("الربيع", "الصيف", "الخريف", "الشتاء")
+
+    private val CROPS_EN = listOf("Wheat", "Corn", "Rice", "Soybeans", "Cotton", "Fruits", "Vegetables")
+    private val CROPS_AR = listOf("قمح", "ذرة", "أرز", "فول صويا", "قطن", "فواكه", "خضروات")
 
     fun getFieldsForAnalysis(analysisType: AnalysisType): List<AnalysisField> {
         return when (analysisType) {
@@ -33,9 +49,11 @@ object StaticDataProvider {
             "crop",
             "Crop Type",
             "نوع المحصول",
-            "Enter crop name",
-            "أدخل نوع المحصول",
-            FieldType.TEXT
+            "Select crop",
+            "اختر المحصول",
+            FieldType.DROPDOWN,
+            CROPS_EN,
+            CROPS_AR
         ),
         AnalysisField(
             "water",
@@ -49,25 +67,31 @@ object StaticDataProvider {
             "soil",
             "Soil Type",
             "نوع التربة",
-            "e.g., Sandy, Clay, Loamy",
-            "مثال: رملية، طينية، طميية",
-            FieldType.TEXT
+            "Select soil type",
+            "اختر نوع التربة",
+            FieldType.DROPDOWN,
+            SOIL_TYPES_EN,
+            SOIL_TYPES_AR
         ),
         AnalysisField(
             "growth",
             "Growth Stage",
             "مرحلة النمو",
-            "e.g., Seedling, Vegetative, Flowering, Fruiting",
-            "مثال: الإنبات، النمو، الإزهار، الإثمار",
-            FieldType.TEXT
+            "Select growth stage",
+            "اختر مرحلة النمو",
+            FieldType.DROPDOWN,
+            GROWTH_STAGES_EN,
+            GROWTH_STAGES_AR
         ),
         AnalysisField(
             "weather",
             "Current Weather",
             "الطقس الحالي",
-            "e.g., Sunny, Cloudy, Rainy",
-            "مثال: مشمس، غائم، ممطر",
-            FieldType.TEXT
+            "Select weather",
+            "اختر الطقس",
+            FieldType.DROPDOWN,
+            WEATHER_EN,
+            WEATHER_AR
         )
     )
 
@@ -76,9 +100,11 @@ object StaticDataProvider {
             "crop",
             "Crop Type",
             "نوع المحصول",
-            "Enter crop name",
-            "أدخل نوع المحصول",
-            FieldType.TEXT
+            "Select crop",
+            "اختر المحصول",
+            FieldType.DROPDOWN,
+            CROPS_EN,
+            CROPS_AR
         ),
         AnalysisField(
             "symptoms",
@@ -92,9 +118,11 @@ object StaticDataProvider {
             "season",
             "Current Season",
             "الموسم الحالي",
-            "e.g., Spring, Summer, Fall, Winter",
-            "مثال: الربيع، الصيف، الخريف، الشتاء",
-            FieldType.TEXT
+            "Select season",
+            "اختر الموسم",
+            FieldType.DROPDOWN,
+            SEASONS_EN,
+            SEASONS_AR
         ),
         AnalysisField(
             "humidity",
@@ -119,17 +147,21 @@ object StaticDataProvider {
             "crop",
             "Crop Type",
             "نوع المحصول",
-            "Enter crop name",
-            "أدخل نوع المحصول",
-            FieldType.TEXT
+            "Select crop",
+            "اختر المحصول",
+            FieldType.DROPDOWN,
+            CROPS_EN,
+            CROPS_AR
         ),
         AnalysisField(
             "growth",
             "Growth Stage",
             "مرحلة النمو",
-            "e.g., Seedling, Vegetative, Flowering, Fruiting",
-            "مثال: الإنبات، النمو، الإزهار، الإثمار",
-            FieldType.TEXT
+            "Select growth stage",
+            "اختر مرحلة النمو",
+            FieldType.DROPDOWN,
+            GROWTH_STAGES_EN,
+            GROWTH_STAGES_AR
         ),
         AnalysisField(
             "location",
@@ -146,25 +178,31 @@ object StaticDataProvider {
             "weather",
             "Current Weather",
             "الطقس الحالي",
-            "e.g., Sunny, Cloudy, Rainy",
-            "مثال: مشمس، غائم، ممطر",
-            FieldType.TEXT
+            "Select weather",
+            "اختر الطقس",
+            FieldType.DROPDOWN,
+            WEATHER_EN,
+            WEATHER_AR
         ),
         AnalysisField(
             "crop",
             "Crop Type",
             "نوع المحصول",
-            "Enter crop name",
-            "أدخل نوع المحصول",
-            FieldType.TEXT
+            "Select crop",
+            "اختر المحصول",
+            FieldType.DROPDOWN,
+            CROPS_EN,
+            CROPS_AR
         ),
         AnalysisField(
             "soil",
             "Soil Type",
             "نوع التربة",
-            "e.g., Sandy, Clay, Loamy",
-            "مثال: رملية، طينية، طميية",
-            FieldType.TEXT
+            "Select soil type",
+            "اختر نوع التربة",
+            FieldType.DROPDOWN,
+            SOIL_TYPES_EN,
+            SOIL_TYPES_AR
         ),
         AnalysisField(
             "location",
@@ -184,15 +222,18 @@ object StaticDataProvider {
             "Select target country",
             "اختر الدولة المستهدفة",
             FieldType.DROPDOWN,
-            listOf("Egypt", "Saudi Arabia", "UAE", "Morocco")
+            listOf("Egypt", "Saudi Arabia", "UAE", "Morocco"),
+            listOf("مصر", "السعودية", "الإمارات", "المغرب")
         ),
         AnalysisField(
             "crop",
             "Crop Type",
             "نوع المحصول",
-            "Enter crop name",
-            "أدخل نوع المحصول",
-            FieldType.TEXT
+            "Select crop",
+            "اختر المحصول",
+            FieldType.DROPDOWN,
+            CROPS_EN,
+            CROPS_AR
         ),
         AnalysisField(
             "price",
@@ -217,7 +258,8 @@ object StaticDataProvider {
             "Select demand level",
             "اختر مستوى الطلب",
             FieldType.DROPDOWN,
-            listOf("High", "Medium", "Low")
+            listOf("High", "Medium", "Low"),
+            listOf("عالي", "متوسط", "منخفض")
         ),
         AnalysisField(
             "competition",
@@ -226,7 +268,8 @@ object StaticDataProvider {
             "Select competition level",
             "اختر مستوى المنافسة",
             FieldType.DROPDOWN,
-            listOf("High", "Medium", "Low")
+            listOf("High", "Medium", "Low"),
+            listOf("عالي", "متوسط", "منخفض")
         )
     )
 

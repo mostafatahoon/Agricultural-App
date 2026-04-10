@@ -57,5 +57,7 @@
 
     <string name="select_analysis_title">Select Analysis Type</string>
     <string name="select_analysis_subtitle">Choose the type of analysis you want to perform</string>
-
+    <string name="history_detail_title">Analysis Details</string>
+    <string name="ai_response_label">AI Response</string>
+    <string name="history_screen_title">Analysis History</string>
 </resources>
