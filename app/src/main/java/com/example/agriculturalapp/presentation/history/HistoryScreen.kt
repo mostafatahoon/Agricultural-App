@@ -17,9 +17,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.agriculturalapp.R
 import com.example.agriculturalapp.domain.entity.AIResponse
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -38,7 +40,7 @@ fun HistoryScreen(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "No saved history yet.",
+                text = stringResource(R.string.empty_history),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -53,7 +55,7 @@ fun HistoryScreen(
     ) {
         item {
             Text(
-                text = "Analysis History",
+                text = stringResource(R.string.history_screen_title),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(16.dp),
                 fontWeight = FontWeight.Bold

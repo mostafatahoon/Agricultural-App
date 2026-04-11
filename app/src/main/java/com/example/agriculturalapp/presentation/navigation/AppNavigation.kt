@@ -136,21 +136,20 @@ fun AppNavHost(viewModel: MainViewModel) {
     ) {
         Scaffold(
             topBar = {
-                if (currentRoute != ScreensRoute.Splash.route) {
-                    val title = if (currentRoute == ScreensRoute.Result.route) {
-                        stringResource(R.string.history_detail_title)
-                    } else {
-                        stringResource(R.string.app_name)
-                    }
+                // List of screens that provide their own TopAppBar (usually detail screens)
+                val screensWithCustomTopBar = listOf(
+                    ScreensRoute.Splash.route,
+                    ScreensRoute.Result.route,
+                    ScreensRoute.HistoryDetail.route,
+                    ScreensRoute.Form.route
+                )
 
+                if (currentRoute !in screensWithCustomTopBar) {
                     TopAppBar(
                         title = { 
                             Text(
-                                text = title,
-                                style = if (currentRoute == ScreensRoute.Result.route) 
-                                    MaterialTheme.typography.titleMedium 
-                                else 
-                                    MaterialTheme.typography.titleLarge,
+                                text = stringResource(R.string.app_name),
+                                style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold
                             ) 
                         },

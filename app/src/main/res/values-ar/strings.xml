@@ -10,14 +10,55 @@
 
     <string name="home_title">AgroWise AI</string>
     <string name="home_headline">قرارات زراعية ذكية\nمدعومة بالذكاء الاصطناعي</string>
-    <string name="home_description">استفد من بيانات الأقمار الصناعية عالية الدقة والتعلم الآلي لتحسين إنتاجية المحاصيل.</string>
+    <string name="home_description">استفد من رؤى مدعومة بالذكاء الاصطناعي لتحسين قراراتك الزراعية.</string>
     <string name="start_analysis">ابدأ التحليل</string>
     <string name="view_saved_results">عرض النتائج المحفوظة</string>
     <string name="home_nav">الرئيسية</string>
+    <string name="history_nav">السجل</string>
+
+    <!-- Analysis Types -->
+    <string name="analysis_irrigation">إدارة الري</string>
+    <string name="analysis_disease">تشخيص الأمراض</string>
+    <string name="analysis_fertilizer">تخطيط الأسمدة</string>
+    <string name="analysis_climate">تقييم مخاطر المناخ</string>
+    <string name="analysis_market">التخطيط للسوق</string>
+
+    <!-- Irrigation Fields -->
+    <string name="field_crop">نوع المحصول</string>
+    <string name="field_water">كمية المياه (ملم/يوم)</string>
+    <string name="field_soil">نوع التربة</string>
+    <string name="field_growth">مرحلة النمو</string>
+    <string name="field_weather">الطقس الحالي</string>
+    <string name="field_symptoms">الأعراض</string>
+    <string name="field_season">الموسم الحالي</string>
+    <string name="field_humidity">مستوى الرطوبة (%)</string>
+    <string name="field_soilAnalysis">نتائج تحليل التربة</string>
+    <string name="field_location">موقع المزرعة</string>
+    <string name="field_country">البلد</string>
+    <string name="field_price">السعر الحالي (دولار/وحدة)</string>
+    <string name="field_costs">تكاليف الإنتاج (دولار/وحدة)</string>
+    <string name="field_demand">طلب السوق</string>
+    <string name="field_competition">مستوى المنافسة</string>
+
+    <!-- Buttons -->
+    <string name="btn_submit">إرسال</string>
+    <string name="btn_save">حفظ</string>
+    <string name="btn_back">رجوع</string>
+    <string name="btn_share">مشاركة</string>
+    <string name="btn_delete">حذف</string>
+    <string name="btn_cancel">إلغاء</string>
+
+    <!-- Messages -->
+    <string name="loading">جاري التحميل...</string>
+    <string name="error_network">خطأ في الشبكة. يرجى التحقق من اتصالك.</string>
+    <string name="error_empty_fields">يرجى ملء جميع الحقول المطلوبة</string>
+    <string name="success_saved">تم حفظ التحليل بنجاح</string>
     <string name="empty_history">لا توجد تحليلات محفوظة حتى الآن</string>
 
     <string name="select_analysis_title">اختر نوع التحليل</string>
     <string name="select_analysis_subtitle">اختر نوع التحليل الذي تريد القيام به</string>
     <string name="history_detail_title">تفاصيل التحليل</string>
     <string name="ai_response_label">رد الذكاء الاصطناعي</string>
+    <string name="history_screen_title">سجل التحليلات</string>
+    <string name="splash_subtitle">حلول الزراعة الدقيقة</string>
 </resources>

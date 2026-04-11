@@ -44,8 +44,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -54,6 +57,44 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.agriculturalapp.R
 import com.example.agriculturalapp.presentation.navigation.ScreensRoute
+
+@Composable
+fun MarkdownText(text: String, modifier: Modifier = Modifier) {
+    val annotatedString = buildAnnotatedString {
+        val lines = text.lines()
+        lines.forEach { line ->
+            var currentLine = line.trim()
+            
+            // Handle Bullet Points
+            if (currentLine.startsWith("*")) {
+                append("  • ")
+                currentLine = currentLine.removePrefix("*").trim()
+            }
+            
+            // Handle Bold **
+            val parts = currentLine.split("**")
+            parts.forEachIndexed { index, part ->
+                if (index % 2 == 1) {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
+                        append(part)
+                    }
+                } else {
+                    append(part)
+                }
+            }
+            append("\n")
+        }
+    }
+
+    Text(
+        text = annotatedString,
+        style = MaterialTheme.typography.bodyLarge,
+        lineHeight = 24.sp,
+        color = MaterialTheme.colorScheme.onSurface,
+        textAlign = TextAlign.Start,
+        modifier = modifier.fillMaxWidth()
+    )
+}
 
 @Composable
 fun AnalysisButton(
@@ -270,13 +311,14 @@ fun FormField(
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 4.dp),
+            textAlign = TextAlign.Start
         )
         
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text(placeholder) },
+            placeholder = { Text(placeholder, textAlign = TextAlign.Start) },
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)),
@@ -300,7 +342,8 @@ fun FormField(
                 text = errorMessage,
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
+                textAlign = TextAlign.Start
             )
         }
     }
@@ -329,7 +372,8 @@ fun DropdownFormField(
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 4.dp),
+            textAlign = TextAlign.Start
         )
 
         Box {
@@ -337,7 +381,7 @@ fun DropdownFormField(
                 value = selectedValue,
                 onValueChange = { },
                 readOnly = true,
-                placeholder = { Text(placeholder) },
+                placeholder = { Text(placeholder, textAlign = TextAlign.Start) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { expanded = !expanded }
@@ -391,7 +435,8 @@ fun DropdownFormField(
                 text = errorMessage,
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
+                textAlign = TextAlign.Start
             )
         }
     }
@@ -430,7 +475,8 @@ fun LoadingOverlay(
                     Text(
                         text = message,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -457,7 +503,8 @@ fun LoadingIndicator(
             text = stringResource(R.string.loading),
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 16.dp),
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -490,18 +537,21 @@ fun ResultCard(
                 text = title,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Start
             )
             Text(
                 text = content,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 3
+                maxLines = 3,
+                textAlign = TextAlign.Start
             )
             Text(
                 text = timestamp,
                 fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                textAlign = TextAlign.Start
             )
         }
     }
