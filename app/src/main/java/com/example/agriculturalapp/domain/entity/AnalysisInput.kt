@@ -2,5 +2,5 @@ package com.example.agriculturalapp.domain.entity
 
 data class AnalysisInput(
     val analysisType: AnalysisType,
-    val formData: Map<String, String> // field id to value
+    val formData: Map<String, String>
 )

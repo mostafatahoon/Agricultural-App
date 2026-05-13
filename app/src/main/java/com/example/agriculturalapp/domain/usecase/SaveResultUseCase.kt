@@ -13,7 +13,7 @@ class SaveResultUseCase @Inject constructor(
         response: String
     ) {
         val inputJson = Gson().toJson(input.formData)
-        // analysisType.id is a stable string identifier
+
         val title = "${input.analysisType.id.replaceFirstChar { it.uppercase() }} Analysis"
         
         repository.saveAnalysisResult(

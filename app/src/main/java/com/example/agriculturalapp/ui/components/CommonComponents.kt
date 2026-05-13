@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,35 +16,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.NearMe
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -60,40 +54,69 @@ import com.example.agriculturalapp.presentation.navigation.ScreensRoute
 
 @Composable
 fun MarkdownText(text: String, modifier: Modifier = Modifier) {
-    val annotatedString = buildAnnotatedString {
+    Column(modifier = modifier.fillMaxWidth()) {
         val lines = text.lines()
         lines.forEach { line ->
-            var currentLine = line.trim()
-            
-            // Handle Bullet Points
-            if (currentLine.startsWith("*")) {
-                append("  • ")
-                currentLine = currentLine.removePrefix("*").trim()
+            val trimmedLine = line.trim()
+            if (trimmedLine.isEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                return@forEach
             }
-            
-            // Handle Bold **
-            val parts = currentLine.split("**")
-            parts.forEachIndexed { index, part ->
-                if (index % 2 == 1) {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
-                        append(part)
-                    }
-                } else {
-                    append(part)
+
+            when {
+                trimmedLine.startsWith("##") -> {
+                    Text(
+                        text = trimmedLine.removePrefix("##").trim(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                        textAlign = TextAlign.Start
+                    )
+                }
+                trimmedLine.startsWith("###") -> {
+                    Text(
+                        text = trimmedLine.removePrefix("###").trim(),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFF2E7D32),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 12.dp, bottom = 4.dp),
+                        textAlign = TextAlign.Start
+                    )
+                }
+                else -> {
+                    Text(
+                        text = parseMarkdownLine(trimmedLine),
+                        style = MaterialTheme.typography.bodyLarge,
+                        lineHeight = 26.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
+                    )
                 }
             }
-            append("\n")
         }
     }
+}
 
-    Text(
-        text = annotatedString,
-        style = MaterialTheme.typography.bodyLarge,
-        lineHeight = 24.sp,
-        color = MaterialTheme.colorScheme.onSurface,
-        textAlign = TextAlign.Start,
-        modifier = modifier.fillMaxWidth()
-    )
+private fun parseMarkdownLine(line: String): AnnotatedString {
+    return buildAnnotatedString {
+        var currentLine = line
+        if (currentLine.startsWith("*") || currentLine.startsWith("-")) {
+            append("  • ")
+            currentLine = currentLine.substring(1).trim()
+        }
+        val parts = currentLine.split("**")
+        parts.forEachIndexed { index, part ->
+            if (index % 2 == 1) {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF1B5E20))) {
+                    append(part)
+                }
+            } else {
+                append(part)
+            }
+        }
+    }
 }
 
 @Composable
@@ -116,11 +139,7 @@ fun AnalysisButton(
             color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
         ),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
-            },
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
             contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 8.dp else 2.dp)
@@ -131,58 +150,249 @@ fun AnalysisButton(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.TopStart)
+                    modifier = Modifier.size(24.dp).align(Alignment.TopStart)
                 )
             }
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.Start
-            ) {
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
                 Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .background(
-                            color = if (isSelected) {
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                            } else {
-                                MaterialTheme.colorScheme.surfaceVariant
-                            },
-                            shape = RoundedCornerShape(18.dp)
-                        ),
+                    modifier = Modifier.size(56.dp).background(
+                        color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(18.dp)
+                    ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = icon, fontSize = 28.sp)
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = title,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start
-                )
-
+                Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Start)
                 Spacer(modifier = Modifier.height(8.dp))
+                Text(text = description, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 20.sp, textAlign = TextAlign.Start)
+            }
+        }
+    }
+}
 
+@Composable
+fun LocationFormField(
+    label: String,
+    onLocationChanged: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var locationData by remember { mutableStateOf<String?>(null) }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(24.dp))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(24.dp))
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(imageVector = Icons.Default.LocationOn, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(22.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = label, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+            }
+
+            Button(
+                onClick = { 
+                    locationData = "30.0444° N, 31.2357° E" 
+                    onLocationChanged(locationData!!)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = MaterialTheme.colorScheme.primary),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)),
+                shape = RoundedCornerShape(12.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Icon(Icons.Default.NearMe, null, modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("GPS", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+
+        if (locationData != null) {
+            Surface(
+                modifier = Modifier.padding(top = 12.dp),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
+                shape = RoundedCornerShape(8.dp)
+            ) {
                 Text(
-                    text = description,
-                    fontSize = 14.sp,
-                    color = if (isSelected) {
-                        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.78f)
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                    lineHeight = 20.sp,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start
+                    text = "الإحداثيات: $locationData",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    fontWeight = FontWeight.Medium
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun AreaUnitFormField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    unit: String,
+    onUnitChange: (String) -> Unit,
+    units: List<String>,
+    modifier: Modifier = Modifier,
+    placeholder: String = ""
+) {
+    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(text = label, modifier = Modifier.weight(1f), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF2E7D32), textAlign = TextAlign.Start)
+            Text(text = "الوحدة", modifier = Modifier.width(120.dp), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF2E7D32), textAlign = TextAlign.Center)
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = value,
+                onValueChange = onValueChange,
+                placeholder = { Text(placeholder, textAlign = TextAlign.Start) },
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(20.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF4CAF50), unfocusedBorderColor = MaterialTheme.colorScheme.outline)
+            )
+            var expanded by remember { mutableStateOf(false) }
+            Box(modifier = Modifier.width(120.dp)) {
+                OutlinedTextField(
+                    value = unit,
+                    onValueChange = {},
+                    readOnly = true,
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(textAlign = TextAlign.Center),
+                    shape = RoundedCornerShape(20.dp),
+                    trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, modifier = Modifier.size(24.dp)) },
+                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF4CAF50), unfocusedBorderColor = MaterialTheme.colorScheme.outline)
+                )
+                Box(modifier = Modifier.matchParentSize().clickable { expanded = !expanded })
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier.width(120.dp)) {
+                    units.forEach { u ->
+                        DropdownMenuItem(text = { Text(u, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) }, onClick = { onUnitChange(u); expanded = false })
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FormField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    placeholder: String = "",
+    isError: Boolean = false,
+    errorMessage: String = "",
+    singleLine: Boolean = true,
+    lines: Int = 1
+) {
+    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Text(text = label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF2E7D32), modifier = Modifier.padding(bottom = 4.dp), textAlign = TextAlign.Start)
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(placeholder, textAlign = TextAlign.Start) },
+            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)),
+            singleLine = singleLine,
+            maxLines = if (singleLine) 1 else lines,
+            minLines = lines,
+            isError = isError,
+            shape = RoundedCornerShape(20.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF4CAF50),
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                errorBorderColor = MaterialTheme.colorScheme.error
+            )
+        )
+        if (isError && errorMessage.isNotEmpty()) {
+            Text(text = errorMessage, fontSize = 12.sp, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 4.dp), textAlign = TextAlign.Start)
+        }
+    }
+}
+
+@Composable
+fun DropdownFormField(
+    label: String,
+    selectedValue: String,
+    options: List<String>,
+    onOptionSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    placeholder: String = "Select an option",
+    isError: Boolean = false,
+    errorMessage: String = ""
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Text(text = label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF2E7D32), modifier = Modifier.padding(bottom = 4.dp), textAlign = TextAlign.Start)
+        Box {
+            OutlinedTextField(
+                value = selectedValue,
+                onValueChange = { },
+                readOnly = true,
+                placeholder = { Text(placeholder, textAlign = TextAlign.Start) },
+                modifier = Modifier.fillMaxWidth().clickable { expanded = !expanded }.background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)),
+                trailingIcon = { IconButton(onClick = { expanded = !expanded }) { Icon(Icons.Default.ArrowDropDown, "Dropdown") } },
+                isError = isError,
+                shape = RoundedCornerShape(20.dp),
+                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF4CAF50), unfocusedBorderColor = MaterialTheme.colorScheme.outline)
+            )
+            Box(modifier = Modifier.matchParentSize().clickable { expanded = !expanded })
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier.fillMaxWidth(0.9f)) {
+                options.forEach { option ->
+                    DropdownMenuItem(text = { Text(option) }, onClick = { onOptionSelected(option); expanded = false })
+                }
+            }
+        }
+        if (isError && errorMessage.isNotEmpty()) {
+            Text(text = errorMessage, fontSize = 12.sp, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 4.dp), textAlign = TextAlign.Start)
+        }
+    }
+}
+
+@Composable
+fun LoadingOverlay(isLoading: Boolean, message: String = stringResource(R.string.loading)) {
+    if (isLoading) {
+        Dialog(onDismissRequest = { }, properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
+            Surface(modifier = Modifier.size(150.dp), shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface, tonalElevation = 8.dp) {
+                Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary, strokeWidth = 4.dp, modifier = Modifier.size(48.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(text = message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface, textAlign = TextAlign.Center)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingIndicator(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(16.dp))
+        Text(text = stringResource(R.string.loading), fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 16.dp), textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+fun ResultCard(title: String, content: String, timestamp: String, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier.fillMaxWidth().padding(8.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f), contentColor = MaterialTheme.colorScheme.onSurface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, textAlign = TextAlign.Start)
+            Text(text = content, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface, maxLines = 3, textAlign = TextAlign.Start)
+            Text(text = timestamp, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), textAlign = TextAlign.Start)
         }
     }
 }
@@ -203,356 +413,46 @@ fun AgroBottomBar(navController: NavController) {
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)
-                .padding(bottom = 8.dp),
+            modifier = Modifier.fillMaxWidth().height(80.dp).padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // History
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { 
-                        if (currentRoute != ScreensRoute.History.route) {
-                            navController.navigate(ScreensRoute.History.route)
-                        }
-                    }
+                modifier = Modifier.weight(1f).clickable { 
+                    if (currentRoute != ScreensRoute.History.route) navController.navigate(ScreensRoute.History.route)
+                }
             ) {
-                Icon(
-                    imageVector = Icons.Default.History,
-                    contentDescription = null,
-                    tint = if (currentRoute == ScreensRoute.History.route) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = stringResource(R.string.history_nav),
-                    fontSize = 12.sp,
-                    color = if (currentRoute == ScreensRoute.History.route) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Icon(imageVector = Icons.Default.History, contentDescription = null, tint = if (currentRoute == ScreensRoute.History.route) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(text = stringResource(R.string.history_nav), fontSize = 12.sp, color = if (currentRoute == ScreensRoute.History.route) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
-            // Central Button (Analyze)
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 Surface(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .offset(y = (-16).dp),
+                    modifier = Modifier.size(64.dp).offset(y = (-16).dp),
                     shape = CircleShape,
                     color = MaterialTheme.colorScheme.primary,
                     shadowElevation = 10.dp
                 ) {
                     IconButton(onClick = { 
-                        if (currentRoute != ScreensRoute.Analyze.route) {
-                            navController.navigate(ScreensRoute.Analyze.route)
-                        }
+                        if (currentRoute != ScreensRoute.Analyze.route) navController.navigate(ScreensRoute.Analyze.route)
                     }) {
-                        Icon(
-                            imageVector = Icons.Default.GridView,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(32.dp)
-                        )
+                        Icon(imageVector = Icons.Default.GridView, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(32.dp))
                     }
                 }
             }
 
-            // Home
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { 
-                        if (currentRoute != ScreensRoute.Home.route) {
-                            navController.navigate(ScreensRoute.Home.route) {
-                                popUpTo(ScreensRoute.Home.route) { inclusive = true }
-                            }
-                        }
+                modifier = Modifier.weight(1f).clickable { 
+                    if (currentRoute != ScreensRoute.Home.route) {
+                        navController.navigate(ScreensRoute.Home.route) { popUpTo(ScreensRoute.Home.route) { inclusive = true } }
                     }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = null,
-                    tint = if (currentRoute == ScreensRoute.Home.route) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = stringResource(R.string.home_nav),
-                    fontSize = 12.sp,
-                    color = if (currentRoute == ScreensRoute.Home.route) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun FormField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    placeholder: String = "",
-    isError: Boolean = false,
-    errorMessage: String = "",
-    singleLine: Boolean = true,
-    lines: Int = 1
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(bottom = 4.dp),
-            textAlign = TextAlign.Start
-        )
-        
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            placeholder = { Text(placeholder, textAlign = TextAlign.Start) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)),
-            singleLine = singleLine,
-            maxLines = if (singleLine) 1 else lines,
-            minLines = lines,
-            isError = isError,
-            shape = RoundedCornerShape(20.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                errorBorderColor = MaterialTheme.colorScheme.error,
-                errorContainerColor = MaterialTheme.colorScheme.surface
-            )
-        )
-        
-        if (isError && errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 4.dp),
-                textAlign = TextAlign.Start
-            )
-        }
-    }
-}
-
-@Composable
-fun DropdownFormField(
-    label: String,
-    selectedValue: String,
-    options: List<String>,
-    onOptionSelected: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    placeholder: String = "Select an option",
-    isError: Boolean = false,
-    errorMessage: String = ""
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(bottom = 4.dp),
-            textAlign = TextAlign.Start
-        )
-
-        Box {
-            OutlinedTextField(
-                value = selectedValue,
-                onValueChange = { },
-                readOnly = true,
-                placeholder = { Text(placeholder, textAlign = TextAlign.Start) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { expanded = !expanded }
-                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)),
-                trailingIcon = {
-                    IconButton(onClick = { expanded = !expanded }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = "Dropdown"
-                        )
-                    }
-                },
-                isError = isError,
-                shape = RoundedCornerShape(20.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    errorBorderColor = MaterialTheme.colorScheme.error,
-                    errorContainerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-
-            // Transparent overlay to catch clicks on the entire TextField
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .clickable { expanded = !expanded }
-            )
-
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth(0.9f)
-            ) {
-                options.forEach { option ->
-                    DropdownMenuItem(
-                        text = { Text(option) },
-                        onClick = {
-                            onOptionSelected(option)
-                            expanded = false
-                        }
-                    )
                 }
-            }
-        }
-
-        if (isError && errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 4.dp),
-                textAlign = TextAlign.Start
-            )
-        }
-    }
-}
-
-@Composable
-fun LoadingOverlay(
-    isLoading: Boolean,
-    message: String = stringResource(R.string.loading)
-) {
-    if (isLoading) {
-        Dialog(
-            onDismissRequest = { },
-            properties = DialogProperties(
-                dismissOnBackPress = false,
-                dismissOnClickOutside = false
-            )
-        ) {
-            Surface(
-                modifier = Modifier.size(150.dp),
-                shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surface,
-                tonalElevation = 8.dp
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 4.dp,
-                        modifier = Modifier.size(48.dp)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = message,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Icon(imageVector = Icons.Default.Home, contentDescription = null, tint = if (currentRoute == ScreensRoute.Home.route) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(text = stringResource(R.string.home_nav), fontSize = 12.sp, color = if (currentRoute == ScreensRoute.Home.route) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
             }
-        }
-    }
-}
-
-@Composable
-fun LoadingIndicator(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        androidx.compose.material3.CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(16.dp)
-        )
-        Text(
-            text = stringResource(R.string.loading),
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 16.dp),
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun ResultCard(
-    title: String,
-    content: String,
-    timestamp: String,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-            contentColor = MaterialTheme.colorScheme.onSurface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Start
-            )
-            Text(
-                text = content,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 3,
-                textAlign = TextAlign.Start
-            )
-            Text(
-                text = timestamp,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                textAlign = TextAlign.Start
-            )
         }
     }
 }

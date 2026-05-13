@@ -40,9 +40,9 @@ class AiResponseScreenViewModel @Inject constructor(
     }
 }
 
-sealed interface AiResponseUiState {
-    object Initial : AiResponseUiState
-    object Loading : AiResponseUiState
-    data class Success(val response: AIResponse) : AiResponseUiState
-    data class Error(val message: String) : AiResponseUiState
-}
+    sealed interface AiResponseUiState {
+        object Initial : AiResponseUiState
+        object Loading : AiResponseUiState
+        data class Success(val response: AIResponse) : AiResponseUiState
+        data class Error(val message: String) : AiResponseUiState
+    }

@@ -1,14 +1,14 @@
 package com.example.agriculturalapp.data.dtomodel
 
 data class GeminiRequestDto(
-    val contents: List<Content>
+    val contents: List<ContentRequest>
 )
 
-data class Content(
+data class ContentRequest(
     val role: String = "user",
-    val parts: List<Part>
+    val parts: List<PartRequest>
 )
 
-data class Part(
+data class PartRequest(
     val text: String
 )

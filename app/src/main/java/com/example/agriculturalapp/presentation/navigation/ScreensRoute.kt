@@ -7,7 +7,6 @@ sealed class ScreensRoute(val route: String) {
     object Form : ScreensRoute("form_screen/{analysisType}") {
         fun createRoute(analysisType: String) = "form_screen/$analysisType"
     }
-    object Loading : ScreensRoute("loading_screen")
     object Result : ScreensRoute("result_screen")
     object History : ScreensRoute("history_screen")
     object HistoryDetail : ScreensRoute("history_detail_screen")

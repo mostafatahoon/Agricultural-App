@@ -56,24 +56,6 @@
             </PendingDiffInfo>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/agriculturalapp/data/mapper/GeminiMapper.kt">
-          <value>
-            <PendingDiffInfo>
-              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/agriculturalapp/data/mapper/GeminiMapper.kt" />
-              <option name="originalContent" value="package com.example.agriculturalapp.data.mapper&#10;&#10;import com.example.agriculturalapp.data.dtomodel.GeminiResponse&#10;import com.example.agriculturalapp.domain.entity.AIResponse&#10;import javax.inject.Inject&#10;&#10;class GeminiMapper @Inject constructor() {&#10;    fun toDomain(prompt: String, response: GeminiResponse): AIResponse {&#10;        val text = response.candidates&#10;            .firstOrNull()&#10;            ?.content&#10;            ?.parts&#10;            ?.firstOrNull()&#10;            ?.text&#10;            ?.trim()&#10;            .orEmpty()&#10;&#10;        return AIResponse(&#10;            prompt = prompt,&#10;            response = text.ifBlank { &quot;No response generated.&quot; },&#10;            timestamp = System.currentTimeMillis()&#10;        )&#10;    }&#10;}&#10;&#10;" />
-              <option name="updatedContent" value="package com.example.agriculturalapp.data.mapper&#13;&#10;&#13;&#10;import com.example.agriculturalapp.data.dtomodel.GeminiResponseDto&#13;&#10;import com.example.agriculturalapp.domain.entity.AIResponse&#13;&#10;import javax.inject.Inject&#13;&#10;&#13;&#10;class GeminiMapper @Inject constructor() {&#13;&#10;    fun toDomain(prompt: String, response: GeminiResponseDto): AIResponse {&#13;&#10;        val text = response.candidates&#13;&#10;            .firstOrNull()&#13;&#10;            ?.content&#13;&#10;            ?.parts&#13;&#10;            ?.firstOrNull()&#13;&#10;            ?.text&#13;&#10;            ?.trim()&#13;&#10;            .orEmpty()&#13;&#10;&#13;&#10;        return AIResponse(&#13;&#10;            prompt = prompt,&#13;&#10;            response = text.ifBlank { &quot;No response generated.&quot; },&#13;&#10;            timestamp = System.currentTimeMillis()&#13;&#10;        )&#13;&#10;    }&#13;&#10;}" />
-            </PendingDiffInfo>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/agriculturalapp/domain/repository/AIRepository.kt">
-          <value>
-            <PendingDiffInfo>
-              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/agriculturalapp/domain/repository/AIRepository.kt" />
-              <option name="originalContent" value="package com.example.agriculturalapp.domain.repository&#10;&#10;import com.example.agriculturalapp.domain.entity.AIResponse&#10;import kotlinx.coroutines.flow.Flow&#10;&#10;interface AIRepository {&#10;&#10;    suspend fun sendAIRequest(prompt: String): AIResponse&#10;&#10;    suspend fun getAIResponse(prompt: String): AIResponse&#10;&#10;    suspend fun saveResponse(response: AIResponse)&#10;&#10;    fun getSavedResponses(): Flow&lt;List&lt;AIResponse&gt;&gt;&#10;&#10;}" />
-              <option name="updatedContent" value="package com.example.agriculturalapp.domain.repository&#10;&#10;import com.example.agriculturalapp.domain.entity.AIResponse&#10;import kotlinx.coroutines.flow.Flow&#10;&#10;interface AIRepository {&#10;&#10;    suspend fun sendAIRequest(prompt: String): AIResponse&#10;&#10;    suspend fun getAIResponse(prompt: String): AIResponse&#10;&#10;    suspend fun saveResponse(response: AIResponse)&#10;&#10;    suspend fun saveAnalysisResult(&#10;        analysisType: String,&#10;        inputData: String,&#10;        aiResponse: String,&#10;        title: String&#10;    )&#10;&#10;    fun getSavedResponses(): Flow&lt;List&lt;AIResponse&gt;&gt;&#10;&#10;}" />
-            </PendingDiffInfo>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/example/agriculturalapp/domain/usecase/GetResultsUseCase.kt">
           <value>
             <PendingDiffInfo>

@@ -1,31 +1,52 @@
 package com.example.agriculturalapp.data.repository
 
 import com.example.agriculturalapp.data.local.ResponseDao
+import com.example.agriculturalapp.data.mapper.GeminiMapper
 import com.example.agriculturalapp.data.mapper.ResultEntityMapper
+import com.example.agriculturalapp.data.remote.GeminiApi
+import com.example.agriculturalapp.data.dtomodel.GeminiRequestDto
+import com.example.agriculturalapp.data.dtomodel.ContentRequest
+import com.example.agriculturalapp.data.dtomodel.PartRequest
 import com.example.agriculturalapp.domain.entity.AIResponse
 import com.example.agriculturalapp.domain.repository.AIRepository
 import com.google.ai.client.generativeai.GenerativeModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class AIRepositoryImpl @Inject constructor(
     private val generativeModel: GenerativeModel,
     private val responseDao: ResponseDao,
-    private val resultEntityMapper: ResultEntityMapper
+    private val resultEntityMapper: ResultEntityMapper,
+    private val geminiMapper: GeminiMapper,
+    private val geminiApi: GeminiApi,
+    @Named("geminiApiKey") private val apiKey: String
 ) : AIRepository {
 
     override suspend fun sendAIRequest(prompt: String): AIResponse {
-        val response = generativeModel.generateContent(prompt)
-        val text = response.text?.trim() ?: "No response generated."
+        return try {
 
-        return AIResponse(
-            prompt = prompt,
-            response = text,
-            timestamp = System.currentTimeMillis()
-        )
+            val request = GeminiRequestDto(
+                contents = listOf(
+                    ContentRequest(
+                        parts = listOf(PartRequest(text = prompt))
+                    )
+                )
+            )
+            val responseDto = geminiApi.generateContent(apiKey, request)
+            geminiMapper.toDomain(prompt, responseDto)
+        } catch (e: Exception) {
+
+            val response = generativeModel.generateContent(prompt)
+            AIResponse(
+                prompt = prompt,
+                response = response.text?.trim() ?: "No response generated.",
+                timestamp = System.currentTimeMillis()
+            )
+        }
     }
 
     override suspend fun getAIResponse(prompt: String): AIResponse {
@@ -49,7 +70,6 @@ class AIRepositoryImpl @Inject constructor(
         aiResponse: String,
         title: String
     ) {
-        // We use the existing mapping logic to maintain consistency
         val response = AIResponse(
             prompt = analysisType,
             response = aiResponse,

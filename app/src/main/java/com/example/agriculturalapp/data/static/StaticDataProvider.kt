@@ -10,11 +10,13 @@ data class AnalysisField(
     val placeHolderAr: String,
     val type: FieldType,
     val optionsEn: List<String> = emptyList(),
-    val optionsAr: List<String> = emptyList()
+    val optionsAr: List<String> = emptyList(),
+    val dependsOn: String? = null,
+    val showIfValue: String? = null
 )
 
 enum class FieldType {
-    TEXT, TEXTAREA, DROPDOWN, NUMBER
+    TEXT, TEXTAREA, DROPDOWN, NUMBER, LOCATION, AREA_UNIT
 }
 
 object StaticDataProvider {
@@ -23,7 +25,7 @@ object StaticDataProvider {
     private val SOIL_TYPES_AR = listOf("رملية", "طينية", "طميية", "غرينية", "خثية", "طباشيرية")
 
     private val GROWTH_STAGES_EN = listOf("Seedling", "Vegetative", "Flowering", "Fruiting", "Harvesting")
-    private val GROWTH_STAGES_AR = listOf("بادرة", "خضري", "إزهار", "إثمار", "حصاد")
+    private val GROWTH_STAGES_AR = listOf("بادرة", "نمو خضري", "إزهار", "إثمار", "حصاد")
 
     private val WEATHER_EN = listOf("Sunny", "Cloudy", "Rainy", "Stormy", "Windy", "Humid")
     private val WEATHER_AR = listOf("مشمس", "غائم", "ممطر", "عاصف", "ريح", "رطب")
@@ -33,6 +35,15 @@ object StaticDataProvider {
 
     private val CROPS_EN = listOf("Wheat", "Corn", "Rice", "Soybeans", "Cotton", "Fruits", "Vegetables")
     private val CROPS_AR = listOf("قمح", "ذرة", "أرز", "فول صويا", "قطن", "فواكه", "خضروات")
+
+    private val UNITS_EN = listOf("Feddan", "Carat", "Acre", "Hectare")
+    private val UNITS_AR = listOf("فدان", "قيراط", "أكر", "هكتار")
+
+    private val IRRIGATION_TYPES_EN = listOf("Flood", "Drip", "Sprinkler")
+    private val IRRIGATION_TYPES_AR = listOf("غمر", "تنقيط", "رش")
+
+    private val WATER_SOURCES_EN = listOf("Canal", "Well", "Nile", "Rain")
+    private val WATER_SOURCES_AR = listOf("ترعة", "بئر", "نيل", "مطر")
 
     fun getFieldsForAnalysis(analysisType: AnalysisType): List<AnalysisField> {
         return when (analysisType) {
@@ -46,6 +57,14 @@ object StaticDataProvider {
 
     private fun getIrrigationFields(): List<AnalysisField> = listOf(
         AnalysisField(
+            "location",
+            "Location",
+            "الموقع",
+            "",
+            "",
+            FieldType.LOCATION
+        ),
+        AnalysisField(
             "crop",
             "Crop Type",
             "نوع المحصول",
@@ -54,14 +73,6 @@ object StaticDataProvider {
             FieldType.DROPDOWN,
             CROPS_EN,
             CROPS_AR
-        ),
-        AnalysisField(
-            "water",
-            "Water Amount (mm/day)",
-            "كمية المياه (مم/يوم)",
-            "Enter water amount",
-            "أدخل كمية المياه",
-            FieldType.NUMBER
         ),
         AnalysisField(
             "soil",
@@ -84,14 +95,47 @@ object StaticDataProvider {
             GROWTH_STAGES_AR
         ),
         AnalysisField(
-            "weather",
-            "Current Weather",
-            "الطقس الحالي",
-            "Select weather",
-            "اختر الطقس",
+            "area",
+            "Land Area",
+            "مساحة الأرض",
+            "e.g. 5",
+            "مثال: 5",
+            FieldType.AREA_UNIT,
+            UNITS_EN,
+            UNITS_AR
+        ),
+        AnalysisField(
+            "irrigation_type",
+            "Irrigation Type",
+            "نوع الري",
+            "Select irrigation type",
+            "اختر نوع الري",
             FieldType.DROPDOWN,
-            WEATHER_EN,
-            WEATHER_AR
+            IRRIGATION_TYPES_EN,
+            IRRIGATION_TYPES_AR
+        ),
+        // Conditional fields for Flood Irrigation
+        AnalysisField(
+            "irrigation_hours",
+            "Irrigation Hours",
+            "عدد ساعات الري",
+            "e.g. 3",
+            "مثال: 3",
+            FieldType.NUMBER,
+            dependsOn = "irrigation_type",
+            showIfValue = "غمر" // Arabic value for Flood
+        ),
+        AnalysisField(
+            "water_source",
+            "Water Source",
+            "مصدر المياه",
+            "Select water source",
+            "اختر مصدر المياه",
+            FieldType.DROPDOWN,
+            WATER_SOURCES_EN,
+            WATER_SOURCES_AR,
+            dependsOn = "irrigation_type",
+            showIfValue = "غمر"
         )
     )
 
@@ -283,98 +327,115 @@ object StaticDataProvider {
         }
     }
 
-    private const val IRRIGATION_PROMPT_TEMPLATE = """
-        You are an intelligent agricultural expert specialized in irrigation management.
+    private val IRRIGATION_PROMPT_TEMPLATE = """
+        أنت خبير زراعي ذكي متخصص في إدارة موارد المياه ونظم الري الحديثة والتقليدية.
         
-        Task: Provide comprehensive irrigation recommendations based on the farm data provided.
+        المهمة: تقديم استشارة فنية متكاملة وتوصيات ري دقيقة بناءً على بيانات المزرعة التفصيلية المقدمة.
         
-        Farm Data:
+        بيانات المزرعة (المدخلات):
         %FARM_DATA%
         
-        Please provide your analysis in the following structure:
-        1. Current Analysis: Assess the current irrigation situation
-        2. Recommendations: Specific irrigation strategies
-        3. Risks: Potential challenges and risks
-        4. Action Steps: Practical steps to implement
-        5. Resources Needed: Tools and materials required
-        6. Success Indicators: How to measure success
+        يرجى تحليل المدخلات أعلاه بدقة متناهية، مع التركيز على الربط بين العناصر التالية:
+        1. **الموقع الجغرافي**: تحليل الظروف المناخية للمنطقة وتأثيرها على معدلات التبخر والاحتياج المائي.
+        2. **المحصول والتربة**: الموازنة بين الاحتياج المائي النوعي للمحصول وقوام التربة (طينية، رملية، إلخ) وقدرتها على صرف أو الاحتفاظ بالمياه.
+        3. **مرحلة النمو**: تقديم جداول ري تتناسب مع احتياجات النبات في عمره الحالي (من البادرة حتى الحصاد).
+        4. **المساحة الكلية**: حساب الاحتياجات المائية الإجمالية بناءً على المساحة والوحدة المستخدمة (فدان، قيراط، إلخ).
+        5. **كفاءة نظام الري**: تقييم النظام الحالي (تنقيط، رش، أو غمر).
+        6. **تحليل ري الغمر (إن وجد)**: إذا كان النظام هو الري بالغمر، قم بتحليل العلاقة بين (ساعات الري) و(مصدر المياه) لتقديم نصائح جوهرية لتقليل الهدر المائي ومنع تملح التربة.
+
+        يجب أن يكون الرد باللغة العربية، منظماً بوضوح، وبالتنسيق التالي:
+        1. **تحليل الوضع الراهن**: تقييم فني شامل لممارسات الري الحالية ومدى ملاءمتها للظروف المعطاة.
+        2. **التوصيات الفنية المحددة**: (كمية المياه، توقيت الري خلال اليوم، عدد المرات أسبوعياً).
+        3. **إدارة المخاطر والتحديات**: التنبيه من مخاطر (نقص المياه، الإجهاد المائي، أو زيادة الري التي تؤدي لأمراض الجذور).
+        4. **خطة العمل التنفيذية**: خطوات عملية ومبسطة للمزارع لتحسين كفاءة استخدام المياه.
+        5. **المعدات والموارد المقترحة**: قائمة بالأدوات أو التقنيات التي تساهم في تطوير نظام الري.
+        6. **مؤشرات النجاح**: علامات ظاهرة يمكن للمزارع مراقبتها للتأكد من نجاح التوصيات المقترحة.
         
-        Make recommendations specific and actionable for the farmer.
-    """
+        اجعل التوصيات مفصلة، قابلة للقياس، وموجهة للعمل (Actionable) لضمان أعلى إنتاجية مع الحفاظ على الموارد المائية.
+    """.trimIndent()
 
     private const val DISEASE_PROMPT_TEMPLATE = """
-        You are an intelligent agricultural expert specialized in plant disease diagnosis.
+        أنت خبير زراعي ذكي متخصص في تشخيص أمراض النبات ووقايتها.
         
-        Task: Diagnose plant diseases based on symptoms and provide treatment recommendations.
+        المهمة: تشخيص الحالة المرضية بناءً على الأعراض والبيانات المقدمة، وتقديم خطة علاجية.
         
-        Farm Data:
+        بيانات المزرعة المدخلة:
         %FARM_DATA%
         
-        Please provide your analysis in the following structure:
-        1. Disease Diagnosis: Identify possible diseases
-        2. Recommendations: Treatment strategies
-        3. Risks: Health and economic risks if untreated
-        4. Action Steps: Practical treatment steps
-        5. Resources Needed: Pesticides, equipment, or professional help
-        6. Success Indicators: Signs of recovery and improvement
+        يرجى تحليل المدخلات مع التركيز على:
+        - الربط بين نوع المحصول والأعراض الموصوفة بدقة.
+        - تأثير الموسم الحالي ومستويات الرطوبة على انتشار المرض.
         
-        Make recommendations specific and actionable for the farmer.
+        يجب أن يكون الرد باللغة العربية وبالتنسيق التالي:
+        1. **التشخيص المرضي**: تحديد المرض أو الآفة المحتملة وأسبابها.
+        2. **توصيات العلاج**: استراتيجيات المكافحة (عضوية، كيميائية، أو زراعية).
+        3. **إدارة المخاطر**: المخاطر الاقتصادية والصحية في حال إهمال العلاج.
+        4. **خطوات التنفيذ**: جدول زمني لعمليات الرش أو المعالجة.
+        5. **الموارد المطلوبة**: أنواع المبيدات، الأدوات، أو المساعدات الفنية اللازمة.
+        6. **مؤشرات النجاح**: علامات توقف المرض وبدء تعافي المحصول.
     """
 
     private const val FERTILIZER_PROMPT_TEMPLATE = """
-        You are an intelligent agricultural expert specialized in fertilizer planning.
+        أنت خبير زراعي ذكي متخصص في تغذية النبات وخصوبة التربة.
         
-        Task: Create an optimal fertilization plan based on soil analysis and crop requirements.
+        المهمة: وضع خطة تسميد مثالية بناءً على تحليل التربة واحتياجات المحصول.
         
-        Farm Data:
+        بيانات المزرعة المدخلة:
         %FARM_DATA%
         
-        Please provide your analysis in the following structure:
-        1. Soil Analysis: Interpret the soil analysis results
-        2. Recommendations: Specific fertilizer plan with quantities
-        3. Risks: Risks of over/under-fertilization
-        4. Action Steps: Application schedule and methods
-        5. Resources Needed: Fertilizer types, quantities, equipment
-        6. Success Indicators: Expected yield and soil improvements
+        يرجى تحليل المدخلات مع التركيز على:
+        - تفسير نتائج تحليل التربة (NPK) المذكورة في الوصف.
+        - موازنة العناصر الغذائية بناءً على مرحلة النمو (بادرة، إزهار، إلخ).
+        - مراعاة الموقع الجغرافي وتأثيره على امتصاص العناصر.
         
-        Make recommendations specific and actionable for the farmer.
+        يجب أن يكون الرد باللغة العربية وبالتنسيق التالي:
+        1. **تحليل حالة التربة**: تفسير علمي لمدى توفر العناصر الغذائية حالياً.
+        2. **التوصيات السمادية**: الكميات المحددة، الأنواع (يوريا، سوبر فوسفات، إلخ)، وطرق الإضافة.
+        3. **إدارة المخاطر**: مخاطر التسميد الزائد (ملوحة) أو الناقص (ضعف الإنتاج).
+        4. **جدول العمل**: مواعيد الإضافة المثالية خلال الموسم.
+        5. **الموارد المطلوبة**: قائمة بالأسمدة والمعدات اللازمة.
+        6. **مؤشرات النجاح**: التحسن المتوقع في المحصول وجودة التربة.
     """
 
     private const val CLIMATE_PROMPT_TEMPLATE = """
-        You are an intelligent agricultural expert specialized in climate risk assessment.
+        أنت خبير زراعي ذكي متخصص في الأرصاد الجوية الزراعية وإدارة المخاطر المناخية.
         
-        Task: Assess climate-related risks and provide mitigation strategies.
+        المهمة: تقييم المخاطر المناخية الحالية وتقديم استراتيجيات للتكيف وحماية المحصول.
         
-        Farm Data:
+        بيانات المزرعة المدخلة:
         %FARM_DATA%
         
-        Please provide your analysis in the following structure:
-        1. Risk Assessment: Identify climate-related risks
-        2. Recommendations: Risk mitigation strategies
-        3. Impacts: Potential impacts on crop yield
-        4. Action Steps: Preventive measures to take
-        5. Resources Needed: Seeds, equipment, infrastructure
-        6. Success Indicators: Reduced losses and better resilience
+        يرجى تحليل المدخلات مع التركيز على:
+        - تأثير الطقس الحالي على نوع المحصول ونوع التربة (مثل تأثير الحرارة على التربة الرملية).
+        - الموقع الجغرافي وتوقعات المخاطر المرتبطة به.
         
-        Make recommendations specific and actionable for the farmer.
+        يجب أن يكون الرد باللغة العربية وبالتنسيق التالي:
+        1. **تقييم المخاطر المناخية**: تحديد التهديدات (صقيع، موجات حر، رياح شديدة، إلخ).
+        2. **توصيات التكيف**: استراتيجيات لحماية المحصول (تعديل مواعيد الري، التغطية، إلخ).
+        3. **التأثيرات المتوقعة**: كيف سيؤثر المناخ على حجم وجودة الإنتاج.
+        4. **خطوات استباقية**: إجراءات وقائية يجب اتخاذها فوراً.
+        5. **الموارد المطلوبة**: البنية التحتية أو الأدوات اللازمة للحماية.
+        6. **مؤشرات النجاح**: تقليل الخسائر وزيادة مرونة المزرعة تجاه المناخ.
     """
 
     private const val MARKET_PROMPT_TEMPLATE = """
-        You are an intelligent agricultural expert specialized in market analysis and planning.
+        أنت خبير زراعي متخصص في تحليل الأسواق والتخطيط الاقتصادي الزراعي.
         
-        Task: Provide market analysis and recommendations for optimal pricing and sales strategy.
+        المهمة: تقديم تحليل سوقي وتوصيات لتعظيم الربحية بناءً على بيانات الاقتصادية المتاحة.
         
-        Farm Data:
+        بيانات المزرعة المدخلة:
         %FARM_DATA%
         
-        Please provide your analysis in the following structure:
-        1. Market Analysis: Current market situation and trends
-        2. Recommendations: Pricing and sales strategy
-        3. Risks: Market risks and challenges
-        4. Action Steps: Steps to increase profitability
-        5. Resources Needed: Marketing channels, certifications
-        6. Success Indicators: Revenue goals and market share
+        يرجى تحليل المدخلات مع التركيز على:
+        - مقارنة السعر الحالي بتكاليف الإنتاج في الدولة المستهدفة.
+        - تأثير مستوى الطلب والمنافسة على استراتيجية البيع.
         
-        Make recommendations specific and actionable for the farmer.
+        يجب أن يكون الرد باللغة العربية وبالتنسيق التالي:
+        1. **تحليل السوق الحالي**: نظرة عامة على الاتجاهات والفرص المتاحة للمحصول.
+        2. **توصيات التسعير والبيع**: استراتيجية البيع المثالية وتوقيت الدخول للسوق.
+        3. **إدارة المخاطر**: تحديات تقلب الأسعار أو المنافسة الشرسة.
+        4. **خطوات زيادة الربحية**: إجراءات لتقليل التكاليف أو تحسين القيمة المضافة.
+        5. **الموارد المطلوبة**: قنوات التسويق، الشهادات اللازمة، أو وسائل التغليف.
+        6. **مؤشرات النجاح**: الأهداف المالية المتوقعة والحصة السوقية المستهدفة.
     """
 }
